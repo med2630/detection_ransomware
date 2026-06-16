@@ -1,0 +1,8 @@
+{"timestamp": "2026-06-16 09:55:39", "event_type": "created", "file_path": "./watched_folder/test.txt", "cpu_percent": 4.0, "ram_percent": 28.2, "process_count": 353, "alert_level": "LOW"}
+{"timestamp": "2026-06-16 09:55:46", "event_type": "modified", "file_path": "./watched_folder/test.txt", "cpu_percent": 15.1, "ram_percent": 28.3, "process_count": 353, "alert_level": "LOW"}
+{"timestamp": "2026-06-16 09:55:50", "event_type": "renamed", "file_path": "./watched_folder/test.txt", "cpu_percent": 4.9, "ram_percent": 28.3, "process_count": 353, "alert_level": "LOW", "dest_path": "./watched_folder/nouveau.txt"}
+{"timestamp": "2026-06-16 09:55:54", "event_type": "deleted", "file_path": "./watched_folder/nouveau.txt", "cpu_percent": 3.9, "ram_percent": 28.4, "process_count": 354, "alert_level": "LOW"}
+{"timestamp": "2026-06-16 09:57:48", "event_type": "created", "file_path": "./watched_folder/test.txt", "cpu_percent": 10.2, "ram_percent": 28.1, "process_count": 359, "alert_level": "LOW"}
+{"timestamp": "2026-06-16 09:57:51", "event_type": "modified", "file_path": "./watched_folder/test.txt", "cpu_percent": 10.1, "ram_percent": 28.1, "process_count": 359, "alert_level": "LOW"}
+{"timestamp": "2026-06-16 09:57:54", "event_type": "renamed", "file_path": "./watched_folder/test.txt", "cpu_percent": 10.9, "ram_percent": 28.1, "process_count": 356, "alert_level": "LOW", "dest_path": "./watched_folder/nouveau.txt"}
+{"timestamp": "2026-06-16 09:57:56", "event_type": "deleted", "file_path": "./watched_folder/nouveau.txt", "cpu_percent": 11.1, "ram_percent": 28.1, "process_count": 356, "alert_level": "LOW"}

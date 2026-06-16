@@ -8,8 +8,7 @@ pid,name,username,ppid,cmdline
 7,kworker/R-slub_flushwq,root,2,
 8,kworker/R-netns,root,2,
 10,kworker/0:0H-kblockd,root,2,
-11,kworker/0:1-cgroup_offline,root,2,
-12,kworker/u48:0-i915,root,2,
+12,kworker/u48:0-async,root,2,
 13,kworker/R-mm_percpu_wq,root,2,
 14,ksoftirqd/0,root,2,
 15,rcu_preempt,root,2,
@@ -33,7 +32,7 @@ pid,name,username,ppid,cmdline
 35,idle_inject/5,root,2,
 36,migration/5,root,2,
 37,ksoftirqd/5,root,2,
-38,kworker/5:0-events,root,2,
+38,kworker/5:0-i915-unordered,root,2,
 39,kworker/5:0H-kblockd,root,2,
 40,cpuhp/6,root,2,
 41,idle_inject/6,root,2,
@@ -65,7 +64,7 @@ pid,name,username,ppid,cmdline
 71,idle_inject/11,root,2,
 72,migration/11,root,2,
 73,ksoftirqd/11,root,2,
-74,kworker/11:0-events,root,2,
+74,kworker/11:0-cgroup_release,root,2,
 75,kworker/11:0H-kblockd,root,2,
 76,cpuhp/1,root,2,
 77,idle_inject/1,root,2,
@@ -76,7 +75,7 @@ pid,name,username,ppid,cmdline
 83,idle_inject/3,root,2,
 84,migration/3,root,2,
 85,ksoftirqd/3,root,2,
-86,kworker/3:0-memcg,root,2,
+86,kworker/3:0-events,root,2,
 87,kworker/3:0H-kblockd,root,2,
 88,kdevtmpfs,root,2,
 89,kworker/R-inet_frag_wq,root,2,
@@ -85,7 +84,6 @@ pid,name,username,ppid,cmdline
 92,kauditd,root,2,
 93,khungtaskd,root,2,
 94,oom_reaper,root,2,
-95,kworker/u48:1-i915,root,2,
 97,kworker/R-writeback,root,2,
 98,kcompactd0,root,2,
 99,ksmd,root,2,
@@ -94,7 +92,6 @@ pid,name,username,ppid,cmdline
 102,kworker/R-blkcg_punt_bio,root,2,
 103,kworker/R-kintegrityd,root,2,
 104,irq/9-acpi,root,2,
-105,kworker/4:1-mm_percpu_wq,root,2,
 106,kworker/1:1-cgroup_offline,root,2,
 108,kworker/R-tpm_dev_wq,root,2,
 109,kworker/R-ata_sff,root,2,
@@ -115,18 +112,16 @@ pid,name,username,ppid,cmdline
 124,kworker/R-acpi_thermal_pm,root,2,
 127,hwrng,root,2,
 128,kworker/R-hfi-updates,root,2,
-129,kworker/5:2-cgroup_free,root,2,
 130,kworker/R-mld,root,2,
 131,kworker/R-ipv6_addrconf,root,2,
 132,kworker/R-kstrp,root,2,
-133,kworker/2:1-events,root,2,
-134,kworker/3:1-mm_percpu_wq,root,2,
-136,kworker/11:1-cgroup_free,root,2,
+133,kworker/2:1-mm_percpu_wq,root,2,
+134,kworker/3:1-cgroup_release,root,2,
+136,kworker/11:1-events,root,2,
 137,kworker/8:1-mm_percpu_wq,root,2,
 151,kworker/R-charger_manager,root,2,
-153,kworker/4:2-cgroup_free,root,2,
+153,kworker/4:2-cgroup_release,root,2,
 256,kworker/7:1-cgroup_free,root,2,
-260,kworker/u48:4-i915,root,2,
 262,kworker/0:2-events,root,2,
 399,kworker/1:2-mm_percpu_wq,root,2,
 435,kworker/R-nvme-wq,root,2,
@@ -138,7 +133,7 @@ pid,name,username,ppid,cmdline
 470,jbd2/nvme0n1p7-8,root,2,
 471,kworker/R-ext4-rsv-conversion,root,2,
 495,kworker/11:1H-kblockd,root,2,
-514,kworker/7:2-mm_percpu_wq,root,2,
+514,kworker/7:2-events,root,2,
 651,kworker/8:1H-kblockd,root,2,
 689,psimon,root,2,
 695,systemd-journald,root,1,/usr/lib/systemd/systemd-journald
@@ -149,8 +144,7 @@ pid,name,username,ppid,cmdline
 753,systemd-resolved,systemd-resolve,1,/usr/lib/systemd/systemd-resolved
 757,systemd-udevd,root,1,/usr/lib/systemd/systemd-udevd
 761,psimon,root,2,
-808,kworker/6:1H-kblockd,root,2,
-824,irq/146-mei_me,root,2,
+808,kworker/6:1H-i915_cleanup,root,2,
 971,irq/16-processor_thermal_device_pci,root,2,
 975,kworker/R-cfg80211,root,2,
 1028,kworker/R-ttm,root,2,
@@ -158,11 +152,10 @@ pid,name,username,ppid,cmdline
 1037,card1-crtc1,root,2,
 1038,card1-crtc2,root,2,
 1039,card1-crtc3,root,2,
-1044,kworker/u49:1-rtw89_tx_wq,root,2,
-1045,kworker/u49:2-rtw89_tx_wq,root,2,
-1058,kworker/1:1H-kblockd,root,2,
-1059,kworker/2:1H-i915_cleanup,root,2,
-1065,kworker/0:1H-kblockd,root,2,
+1044,kworker/u49:1-i915_flip,root,2,
+1058,kworker/1:1H-i915_cleanup,root,2,
+1059,kworker/2:1H-kblockd,root,2,
+1065,kworker/0:1H-i915_cleanup,root,2,
 1085,kworker/5:1H-i915_cleanup,root,2,
 1255,auditd,root,1,/usr/sbin/auditd
 1349,irq/148-rtw89_pci,root,2,
@@ -213,14 +206,14 @@ pid,name,username,ppid,cmdline
 2192,apache2,root,1,/usr/sbin/apache2 -k start -DFOREGROUND
 2199,cron,root,1,/usr/sbin/cron -f -P
 2200,libvirtd,root,1,/usr/sbin/libvirtd --timeout 120
-2224,kworker/9:2-i915-unordered,root,2,
+2224,kworker/9:2-kacpi_notify,root,2,
 2274,gdm3,root,1,/usr/sbin/gdm3
 2345,apache2,www-data,2192,/usr/sbin/apache2 -k start -DFOREGROUND
 2347,apache2,www-data,2192,/usr/sbin/apache2 -k start -DFOREGROUND
 2348,apache2,www-data,2192,/usr/sbin/apache2 -k start -DFOREGROUND
 2349,apache2,www-data,2192,/usr/sbin/apache2 -k start -DFOREGROUND
 2350,apache2,www-data,2192,/usr/sbin/apache2 -k start -DFOREGROUND
-2356,kworker/3:1H-i915_cleanup,root,2,
+2356,kworker/3:1H-kblockd,root,2,
 2444,dnsmasq,libvirt-dnsmasq,1,/usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/default.conf --leasefile-ro --dhcp-script=/usr/lib/libvirt/libvirt_leaseshelper
 2445,dnsmasq,root,2444,/usr/sbin/dnsmasq --conf-file=/var/lib/libvirt/dnsmasq/default.conf --leasefile-ro --dhcp-script=/usr/lib/libvirt/libvirt_leaseshelper
 2649,rtkit-daemon,rtkit,1,/usr/libexec/rtkit-daemon
@@ -299,7 +292,6 @@ pid,name,username,ppid,cmdline
 5215,gsd-xsettings,ahmed-med-aba,4144,/usr/libexec/gsd-xsettings
 5222,mutter-x11-frames,ahmed-med-aba,4430,/usr/libexec/mutter-x11-frames
 5243,ibus-x11,ahmed-med-aba,4144,/usr/libexec/ibus-x11
-5368,gjs,ahmed-med-aba,4430,gjs /usr/share/gnome-shell/extensions/ding@rastersoft.com/app/ding.js -E -P /usr/share/gnome-shell/extensions/ding@rastersoft.com/app
 5391,xdg-desktop-portal-gtk,ahmed-med-aba,4144,/usr/libexec/xdg-desktop-portal-gtk
 5705,code,ahmed-med-aba,4144,/snap/code/244/usr/share/code/code --no-sandbox --force-user-env --ozone-platform=x11
 5707,code,ahmed-med-aba,5705,/snap/code/244/usr/share/code/code --type=zygote --no-zygote-sandbox --no-sandbox
@@ -329,7 +321,6 @@ pid,name,username,ppid,cmdline
 6448,chrome,ahmed-med-aba,6393,"/opt/google/chrome/chrome --type=utility --utility-sub-type=storage.mojom.StorageService --lang=en-US --service-sandbox-type=utility --render-node-override=/dev/dri/renderD128 --crashpad-handler-pid=6380 --enable-crash-reporter=9b5843ad-01e1-4f7f-a820-7cc8d1ddc24f, --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,4882644031576353245,4806834230020034089,524288 --field-trial-handle=3,i,16658330042839282365,11029341642987102036,262144 --disable-features=EyeDropper --variations-seed-version=20260615-010043.943000-production --pseudonymization-salt-handle=7,i,12141570636549133639,8124251732396332642,4 --trace-process-track-uuid=3190708990060038890"
 6546,chrome,ahmed-med-aba,6393,"/opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6380 --enable-crash-reporter=9b5843ad-01e1-4f7f-a820-7cc8d1ddc24f, --change-stack-guard-on-fork=enable --ozone-platform=wayland --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=7 --time-ticks-at-unix-epoch=-1781602467066756 --launch-time-ticks=40769888 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,3588512194737678172,2877098016318118511,2097152 --field-trial-handle=3,i,16658330042839282365,11029341642987102036,262144 --disable-features=EyeDropper --variations-seed-version=20260615-010043.943000-production --pseudonymization-salt-handle=7,i,12141570636549133639,8124251732396332642,4 --trace-process-track-uuid=3190708992871164437"
 6693,chrome,ahmed-med-aba,6372,"/opt/google/chrome/chrome --type=utility --utility-sub-type=audio.mojom.AudioService --lang=en-US --service-sandbox-type=none --render-node-override=/dev/dri/renderD128 --crashpad-handler-pid=6380 --enable-crash-reporter=9b5843ad-01e1-4f7f-a820-7cc8d1ddc24f, --change-stack-guard-on-fork=enable --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,12071681101292572526,11592728486317294615,524288 --field-trial-handle=3,i,16658330042839282365,11029341642987102036,262144 --disable-features=EyeDropper --variations-seed-version=20260615-010043.943000-production --pseudonymization-salt-handle=7,i,12141570636549133639,8124251732396332642,4 --trace-process-track-uuid=3190708998493415531"
-7460,bash,ahmed-med-aba,6194,/usr/bin/bash --init-file /snap/code/244/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
 7574,gvfsd-recent,ahmed-med-aba,4409,/usr/libexec/gvfsd-recent --spawner :1.17 /org/gtk/gvfs/exec_spaw/1
 7583,gvfsd-network,ahmed-med-aba,4409,/usr/libexec/gvfsd-network --spawner :1.17 /org/gtk/gvfs/exec_spaw/2
 7590,gvfsd-dnssd,ahmed-med-aba,4409,/usr/libexec/gvfsd-dnssd --spawner :1.17 /org/gtk/gvfs/exec_spaw/3
@@ -337,16 +328,61 @@ pid,name,username,ppid,cmdline
 7635,uuidd,uuidd,1,/usr/sbin/uuidd --socket-activation --cont-clock
 7755,chrome,ahmed-med-aba,6393,"/opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6380 --enable-crash-reporter=9b5843ad-01e1-4f7f-a820-7cc8d1ddc24f, --change-stack-guard-on-fork=enable --ozone-platform=wayland --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=25 --time-ticks-at-unix-epoch=-1781602467066756 --launch-time-ticks=193425425 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,15327265516790053876,7689945157269856872,2097152 --field-trial-handle=3,i,16658330042839282365,11029341642987102036,262144 --disable-features=EyeDropper --variations-seed-version=20260615-010043.943000-production --pseudonymization-salt-handle=7,i,12141570636549133639,8124251732396332642,4 --trace-process-track-uuid=3190709009737917719"
 7979,kworker/9:1-i915-unordered,root,2,
-7980,kworker/6:1-cgroup_free,root,2,
-8018,kworker/2:0-cgroup_free,root,2,
 8050,chrome,ahmed-med-aba,6393,"/opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6380 --enable-crash-reporter=9b5843ad-01e1-4f7f-a820-7cc8d1ddc24f, --change-stack-guard-on-fork=enable --ozone-platform=wayland --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=29 --time-ticks-at-unix-epoch=-1781602467066756 --launch-time-ticks=352848888 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,9933794875688835769,4986609780213895619,2097152 --field-trial-handle=3,i,16658330042839282365,11029341642987102036,262144 --disable-features=EyeDropper --variations-seed-version=20260615-010043.943000-production --pseudonymization-salt-handle=7,i,12141570636549133639,8124251732396332642,4 --trace-process-track-uuid=3190709013486085115"
-8112,kworker/u49:0-i915_flip,root,2,
-8113,chrome,ahmed-med-aba,6393,"/opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6380 --enable-crash-reporter=9b5843ad-01e1-4f7f-a820-7cc8d1ddc24f, --change-stack-guard-on-fork=enable --ozone-platform=wayland --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=35 --time-ticks-at-unix-epoch=-1781602467066756 --launch-time-ticks=367736082 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,4318569966554325132,9125611129898379168,2097152 --field-trial-handle=3,i,16658330042839282365,11029341642987102036,262144 --disable-features=EyeDropper --variations-seed-version=20260615-010043.943000-production --pseudonymization-salt-handle=7,i,12141570636549133639,8124251732396332642,4 --trace-process-track-uuid=3190709019108336209"
-8304,kworker/8:0,root,2,
 8309,gvfsd-wsdd,ahmed-med-aba,4409,/usr/libexec/gvfsd-wsdd --spawner :1.17 /org/gtk/gvfs/exec_spaw/8
-8325,kworker/u49:3-rtw89_tx_wq,root,2,
-8337,kworker/6:2-cgroup_free,root,2,
-8385,kworker/0:0-cgroup_release,root,2,
+8325,kworker/u49:3-hci0,root,2,
+8337,kworker/6:2-events,root,2,
 8386,kworker/0:3-cgroup_free,root,2,
-8414,python,ahmed-med-aba,7460,python monitor.py
-8422,kworker/u48:2,root,2,
+8422,kworker/u48:2-flush-259:0,root,2,
+8654,chrome,ahmed-med-aba,6393,"/opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6380 --enable-crash-reporter=9b5843ad-01e1-4f7f-a820-7cc8d1ddc24f, --change-stack-guard-on-fork=enable --ozone-platform=wayland --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=43 --time-ticks-at-unix-epoch=-1781602467066756 --launch-time-ticks=1068339688 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,4225744321493326622,10110052418371430178,2097152 --field-trial-handle=3,i,16658330042839282365,11029341642987102036,262144 --disable-features=EyeDropper --variations-seed-version=20260615-010043.943000-production --pseudonymization-salt-handle=7,i,12141570636549133639,8124251732396332642,4 --trace-process-track-uuid=3190709026604671001"
+8804,kworker/5:1-rcu_gp,root,2,
+8918,kworker/u49:2-rtw89_tx_wq,root,2,
+8920,chrome,ahmed-med-aba,6393,"/opt/google/chrome/chrome --type=renderer --crashpad-handler-pid=6380 --enable-crash-reporter=9b5843ad-01e1-4f7f-a820-7cc8d1ddc24f, --change-stack-guard-on-fork=enable --ozone-platform=wayland --lang=en-US --num-raster-threads=4 --enable-main-frame-before-activation --renderer-client-id=66 --time-ticks-at-unix-epoch=-1781602467066756 --launch-time-ticks=1170322262 --shared-files=v8_context_snapshot_data:100 --metrics-shmem-handle=4,i,15896659066361647940,16361552894078435282,2097152 --field-trial-handle=3,i,16658330042839282365,11029341642987102036,262144 --disable-features=EyeDropper --variations-seed-version=20260615-010043.943000-production --pseudonymization-salt-handle=7,i,12141570636549133639,8124251732396332642,4 --trace-process-track-uuid=3190709048156633528"
+9189,kworker/u48:3-async,root,2,
+9457,code,ahmed-med-aba,5969,/snap/code/244/usr/share/code/code /snap/code/244/usr/share/code/resources/app/extensions/json-language-features/server/dist/node/jsonServerMain --node-ipc --clientProcessId=5969
+9680,bash,ahmed-med-aba,6194,/usr/bin/bash --init-file /snap/code/244/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-bash.sh
+9763,kworker/8:2-memcg,root,2,
+9804,kworker/4:0-events,root,2,
+9805,kworker/2:2-events,root,2,
+9984,kworker/u48:1-async,root,2,
+10064,kworker/u49:0-rtw89_tx_wq,root,2,
+10258,kworker/9:0-i915-unordered,root,2,
+10456,kworker/u48:4-async,root,2,
+10457,kworker/u48:5-async,root,2,
+10463,kworker/u48:6-nvme-wq,root,2,
+10464,kworker/u48:7-async,root,2,
+10465,kworker/u48:8-async,root,2,
+10466,kworker/u48:9-flush-259:0,root,2,
+10467,kworker/u48:10-flush-259:0,root,2,
+10468,kworker/u48:11-async,root,2,
+10469,kworker/u48:12-async,root,2,
+10470,kworker/u48:13-async,root,2,
+10471,kworker/u48:14-async,root,2,
+10472,kworker/u48:15-async,root,2,
+10473,kworker/u48:16-async,root,2,
+10474,kworker/u48:17-ext4-rsv-conversion,root,2,
+10475,kworker/5:2-events,root,2,
+10476,irq/133-mei_me,root,2,
+10477,kworker/u48:18-async,root,2,
+10478,kworker/u48:19-async,root,2,
+10479,kworker/u48:20-async,root,2,
+10480,kworker/u48:21-async,root,2,
+10481,kworker/u48:22-async,root,2,
+10482,kworker/u48:23-async,root,2,
+10483,kworker/u48:24-async,root,2,
+10484,kworker/u48:25-events_unbound,root,2,
+10485,kworker/u48:26-i915,root,2,
+10486,kworker/u48:27-flush-259:0,root,2,
+10487,kworker/u48:28,root,2,
+10488,kworker/u48:29,root,2,
+10489,kworker/2:0-events,root,2,
+10490,kworker/2:3,root,2,
+10538,kworker/8:0-cgwb_release,root,2,
+10543,kworker/2:4,root,2,
+10557,kworker/3:2-events,root,2,
+10773,kworker/4:1-cgroup_free,root,2,
+10845,gjs,ahmed-med-aba,4430,gjs /usr/share/gnome-shell/extensions/ding@rastersoft.com/app/ding.js -E -P /usr/share/gnome-shell/extensions/ding@rastersoft.com/app
+10905,kworker/6:1-cgroup_free,root,2,
+10937,kworker/11:2-mm_percpu_wq,root,2,
+11224,obexd,ahmed-med-aba,4144,/usr/libexec/bluetooth/obexd
+11355,python,ahmed-med-aba,9680,python monitor.py

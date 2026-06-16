@@ -72,5 +72,79 @@
     "ram_percent": 28.1,
     "process_count": 356,
     "alert_level": "LOW"
+  },
+  {
+    "timestamp": "2026-06-16 10:11:41",
+    "event_type": "created",
+    "file_path": "./watched_folder/test.txt",
+    "cpu_percent": 10.4,
+    "ram_percent": 29.3,
+    "process_count": 394,
+    "alert_level": "LOW"
+  },
+  {
+    "timestamp": "2026-06-16 10:11:46",
+    "event_type": "modified",
+    "file_path": "./watched_folder/test.txt",
+    "cpu_percent": 10.6,
+    "ram_percent": 29.3,
+    "process_count": 391,
+    "alert_level": "LOW"
+  },
+  {
+    "timestamp": "2026-06-16 10:11:51",
+    "event_type": "renamed",
+    "file_path": "./watched_folder/test.txt",
+    "cpu_percent": 10.9,
+    "ram_percent": 29.4,
+    "process_count": 391,
+    "alert_level": "LOW",
+    "dest_path": "./watched_folder/nouveau.txt"
+  },
+  {
+    "timestamp": "2026-06-16 10:11:55",
+    "event_type": "deleted",
+    "file_path": "./watched_folder/nouveau.txt",
+    "cpu_percent": 10.1,
+    "ram_percent": 29.4,
+    "process_count": 391,
+    "alert_level": "LOW"
+  },
+  {
+    "timestamp": "2026-06-16 10:31:59",
+    "event_type": "created",
+    "file_path": "./watched_folder/test.txt",
+    "cpu_percent": 10.4,
+    "ram_percent": 28.7,
+    "process_count": 361,
+    "alert_level": "LOW"
+  },
+  {
+    "timestamp": "2026-06-16 10:32:02",
+    "event_type": "modified",
+    "file_path": "./watched_folder/test.txt",
+    "cpu_percent": 10.2,
+    "ram_percent": 28.9,
+    "process_count": 361,
+    "alert_level": "LOW"
+  },
+  {
+    "timestamp": "2026-06-16 10:32:04",
+    "event_type": "renamed",
+    "file_path": "./watched_folder/test.txt",
+    "cpu_percent": 9.8,
+    "ram_percent": 28.9,
+    "process_count": 361,
+    "alert_level": "LOW",
+    "dest_path": "./watched_folder/nouveau.txt"
+  },
+  {
+    "timestamp": "2026-06-16 10:32:07",
+    "event_type": "deleted",
+    "file_path": "./watched_folder/nouveau.txt",
+    "cpu_percent": 10.1,
+    "ram_percent": 28.9,
+    "process_count": 361,
+    "alert_level": "LOW"
   }
 ]

@@ -14,3 +14,7 @@
 {"timestamp": "2026-06-16 10:32:02", "event_type": "modified", "file_path": "./watched_folder/test.txt", "cpu_percent": 10.2, "ram_percent": 28.9, "process_count": 361, "alert_level": "LOW"}
 {"timestamp": "2026-06-16 10:32:04", "event_type": "renamed", "file_path": "./watched_folder/test.txt", "cpu_percent": 9.8, "ram_percent": 28.9, "process_count": 361, "alert_level": "LOW", "dest_path": "./watched_folder/nouveau.txt"}
 {"timestamp": "2026-06-16 10:32:07", "event_type": "deleted", "file_path": "./watched_folder/nouveau.txt", "cpu_percent": 10.1, "ram_percent": 28.9, "process_count": 361, "alert_level": "LOW"}
+{"timestamp": "2026-06-18 10:32:17", "event_type": "created", "file_path": "./watched_folder/med.txt", "dest_path": null, "cpu_percent": 7.6, "ram_percent": 34.0, "alert_level": "LOW"}
+{"timestamp": "2026-06-18 10:32:34", "event_type": "modified", "file_path": "./watched_folder/med.txt", "dest_path": null, "cpu_percent": 12.7, "ram_percent": 33.5, "alert_level": "LOW"}
+{"timestamp": "2026-06-18 10:32:48", "event_type": "renamed", "file_path": "./watched_folder/med.txt", "dest_path": "./watched_folder/chhhh.txt", "cpu_percent": 11.2, "ram_percent": 33.4, "alert_level": "LOW"}
+{"timestamp": "2026-06-18 10:34:05", "event_type": "deleted", "file_path": "./watched_folder/chhhh.txt", "dest_path": null, "cpu_percent": 7.6, "ram_percent": 33.3, "alert_level": "LOW"}

@@ -11,7 +11,7 @@ DB_CONFIG = {
     "database": "ransomware_ai",
 }
 
-WINDOW_SECONDS = 60      # Taille de la fenêtre temporelle
+WINDOW_SECONDS = 60  # Taille de la fenêtre temporelle
 OUTPUT_CSV     = "dataset.csv"
 
 # ── Colonnes du dataset ─────────────────────────────────────
@@ -77,9 +77,12 @@ def aggregate_events(events):
         if row["alert_level"] in ("HIGH", "CRITICAL"):
             windows[key]["alert_count"] += 1
 
-        if row["cpu_percent"]:
+        # "is not None" : un CPU/RAM à 0.0 est une valeur valide (machine
+        # idle), pas une valeur absente — un simple "if row[...]:" l'aurait
+        # exclue par erreur car 0.0 est falsy en Python.
+        if row["cpu_percent"] is not None:
             windows[key]["cpu_values"].append(row["cpu_percent"])
-        if row["ram_percent"]:
+        if row["ram_percent"] is not None:
             windows[key]["ram_values"].append(row["ram_percent"])
 
     return windows
@@ -92,11 +95,11 @@ def aggregate_metrics(metrics):
     })
     for row in metrics:
         key = floor_to_window(row["timestamp"])
-        if row["cpu_percent"]:
+        if row["cpu_percent"] is not None:
             windows[key]["cpu_values"].append(row["cpu_percent"])
-        if row["ram_percent"]:
+        if row["ram_percent"] is not None:
             windows[key]["ram_values"].append(row["ram_percent"])
-        if row["process_count"]:
+        if row["process_count"] is not None:
             windows[key]["proc_values"].append(row["process_count"])
     return windows
 
@@ -106,6 +109,22 @@ def safe_avg(lst):
 
 def safe_max(lst):
     return round(max(lst), 2) if lst else 0.0
+
+# ── Étiquetage automatique (heuristique provisoire) ─────────
+def auto_label(alert_count, cpu_max, files_deleted, files_renamed):
+    """
+    Label provisoire (0=normal, 1=suspect) basé sur des seuils simples,
+    en attendant une relecture/correction manuelle des fenêtres.
+    Sans cela, la colonne "label" reste vide et le dataset est inutilisable
+    pour entraîner un modèle supervisé (Random Forest, Semaine 7).
+    """
+    if alert_count > 0:
+        return 1
+    if cpu_max >= 90:
+        return 1
+    if files_deleted >= 3 or files_renamed >= 3:
+        return 1
+    return 0
 
 # ── Construction du dataset ─────────────────────────────────
 def build_dataset(event_windows, metric_windows):
@@ -121,21 +140,49 @@ def build_dataset(event_windows, metric_windows):
         cpu_vals = ev.get("cpu_values", []) + mt.get("cpu_values", [])
         ram_vals = ev.get("ram_values", []) + mt.get("ram_values", [])
 
+        files_deleted = ev.get("files_deleted", 0)
+        files_renamed = ev.get("files_renamed", 0)
+        alert_count   = ev.get("alert_count", 0)
+        cpu_max       = safe_max(cpu_vals)
+
         rows.append({
             "timestamp"     : key,
             "files_created" : ev.get("files_created", 0),
-            "files_deleted" : ev.get("files_deleted", 0),
+            "files_deleted" : files_deleted,
             "files_modified": ev.get("files_modified", 0),
-            "files_renamed" : ev.get("files_renamed", 0),
+            "files_renamed" : files_renamed,
             "cpu_avg"       : safe_avg(cpu_vals),
-            "cpu_max"       : safe_max(cpu_vals),
+            "cpu_max"       : cpu_max,
             "ram_avg"       : safe_avg(ram_vals),
             "process_count" : safe_avg(mt.get("proc_values", [])),
-            "alert_count"   : ev.get("alert_count", 0),
-            "label"         : "",  # à étiqueter manuellement (0=normal, 1=ransomware)
+            "alert_count"   : alert_count,
+            "label"         : auto_label(alert_count, cpu_max, files_deleted, files_renamed),
         })
 
     return rows
+
+# ── Insertion en base (table `features`) ───────────────────
+def insert_features_to_db(conn, rows, window=WINDOW_SECONDS):
+    """Insère les fenêtres agrégées dans la table `features`."""
+    cursor = conn.cursor()
+    cursor.executemany("""
+        INSERT INTO features
+            (timestamp, window_seconds, rename_count, delete_count,
+             create_count, modify_count, avg_cpu, max_cpu, avg_ram, label)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    """, [
+        (
+            row["timestamp"], window,
+            row["files_renamed"], row["files_deleted"],
+            row["files_created"], row["files_modified"],
+            row["cpu_avg"], row["cpu_max"], row["ram_avg"],
+            row["label"],
+        )
+        for row in rows
+    ])
+    conn.commit()
+    print(f"[✔] {cursor.rowcount} ligne(s) insérée(s) dans la table `features`")
+    cursor.close()
 
 # ── Export CSV ─────────────────────────────────────────────
 def export_csv(rows, output=OUTPUT_CSV):
@@ -176,3 +223,7 @@ if __name__ == "__main__":
     rows = build_dataset(event_windows, metric_windows)
     validate_dataset(rows)
     export_csv(rows)
+
+    conn = get_connection()
+    insert_features_to_db(conn, rows)
+    conn.close()

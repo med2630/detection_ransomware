@@ -2,14 +2,7 @@ import mysql.connector
 from datetime import datetime
 from contextlib import contextmanager
 
-# ── Configuration ──────────────────────────────────────────
-DB_CONFIG = {
-    "host"    : "localhost",
-    "user"    : "adminweb",
-    "password": "1234",
-    "database": "ransomware_ai",
-    "charset" : "utf8mb4",
-}
+from .config import DB_CONFIG
 
 # ── Gestionnaire de connexion ──────────────────────────────
 @contextmanager

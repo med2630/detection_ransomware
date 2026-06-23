@@ -1,15 +1,8 @@
 import csv
-import mysql.connector
 from datetime import datetime, timedelta
 from collections import defaultdict
 
-# ── Configuration ──────────────────────────────────────────
-DB_CONFIG = {
-    "host"    : "localhost",
-    "user"    : "adminweb",
-    "password": "1234",
-    "database": "ransomware_ai",
-}
+from .database import get_connection
 
 WINDOW_SECONDS = 60  # Taille de la fenêtre temporelle
 OUTPUT_CSV     = "dataset.csv"
@@ -21,10 +14,6 @@ FIELDNAMES = [
     "cpu_avg", "cpu_max", "ram_avg",
     "process_count", "alert_count", "label",
 ]
-
-# ── Connexion MySQL ────────────────────────────────────────
-def get_connection():
-    return mysql.connector.connect(**DB_CONFIG)
 
 # ── Extraction des événements fichiers ─────────────────────
 def fetch_file_events(conn):

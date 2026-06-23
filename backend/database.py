@@ -2,7 +2,7 @@ import mysql.connector
 from datetime import datetime
 from contextlib import contextmanager
 
-from .config import DB_CONFIG
+from config import DB_CONFIG
 
 # ── Gestionnaire de connexion ──────────────────────────────
 @contextmanager

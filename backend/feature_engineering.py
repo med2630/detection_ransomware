@@ -2,7 +2,7 @@ import csv
 from datetime import datetime, timedelta
 from collections import defaultdict
 
-from .database import get_connection
+from database import get_connection
 
 WINDOW_SECONDS = 60  # Taille de la fenêtre temporelle
 OUTPUT_CSV     = "dataset.csv"

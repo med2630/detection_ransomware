@@ -200,11 +200,9 @@ def validate_dataset(rows):
 
 # ── Pipeline principal ─────────────────────────────────────
 if __name__ == "__main__":
-    conn = get_connection()
-
-    events  = fetch_file_events(conn)
-    metrics = fetch_metrics(conn)
-    conn.close()
+    with get_connection() as conn:
+        events  = fetch_file_events(conn)
+        metrics = fetch_metrics(conn)
 
     event_windows  = aggregate_events(events)
     metric_windows = aggregate_metrics(metrics)
@@ -213,6 +211,5 @@ if __name__ == "__main__":
     validate_dataset(rows)
     export_csv(rows)
 
-    conn = get_connection()
-    insert_features_to_db(conn, rows)
-    conn.close()
+    with get_connection() as conn:
+        insert_features_to_db(conn, rows)

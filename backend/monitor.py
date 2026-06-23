@@ -1,16 +1,18 @@
 import time
 import json
 import logging
+import threading
 import psutil
 from datetime import datetime
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-from database import insert_file_event, insert_alert
+from database import insert_file_event, insert_alert, insert_system_metrics
 
 # ── Configuration ──────────────────────────────────────────
 WATCH_PATH = "./watched_folder"
 LOG_FILE   = "events.log"
 THRESHOLDS = {"cpu_medium": 80, "cpu_high": 95, "ram_high": 90}
+METRICS_INTERVAL = 15  # secondes entre deux collectes système
 
 logging.basicConfig(filename=LOG_FILE, level=logging.INFO,
                     format="%(message)s")
@@ -19,6 +21,21 @@ def get_metrics():
     cpu = psutil.cpu_percent(interval=0.1)
     ram = psutil.virtual_memory()
     return cpu, ram.percent
+
+# ── Collecte périodique des métriques système ──────────────
+def collect_system_metrics(interval=METRICS_INTERVAL):
+    while True:
+        cpu = psutil.cpu_percent(interval=1)
+        ram = psutil.virtual_memory()
+        try:
+            insert_system_metrics(
+                cpu, ram.percent,
+                ram.used // (1024 * 1024), ram.total // (1024 * 1024),
+                len(psutil.pids()),
+            )
+        except Exception as e:
+            print(f"[!] Erreur MySQL (system_metrics) : {e}")
+        time.sleep(interval)
 
 def get_alert_level(cpu, ram):
     if cpu >= THRESHOLDS["cpu_high"] or ram >= THRESHOLDS["ram_high"]:
@@ -71,6 +88,9 @@ class RansomwareMonitor(FileSystemEventHandler):
 
 # ── Main ───────────────────────────────────────────────────
 if __name__ == "__main__":
+    metrics_thread = threading.Thread(target=collect_system_metrics, daemon=True)
+    metrics_thread.start()
+
     observer = Observer()
     observer.schedule(RansomwareMonitor(), path=WATCH_PATH, recursive=True)
     observer.start()

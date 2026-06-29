@@ -4,3 +4,5 @@ backend/dataset_labeled.csv
 backend/events.log
 backend/process_inventory.csv
 backend/system_metrics.json
+backend/watched_folder/*
+backend/model.pkl

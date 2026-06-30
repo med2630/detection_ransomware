@@ -1,8 +1,8 @@
 import os, time, random, string
 from pathlib import Path
 
-TEST_DIR = Path("./watched_folder")
-TEST_DIR.mkdir(exist_ok=True)
+TEST_DIR = Path("backend/watched_folder")
+TEST_DIR.mkdir(parents=True, exist_ok=True)
 
 def random_name(ext=".txt"):
     return "".join(random.choices(string.ascii_lowercase, k=8)) + ext

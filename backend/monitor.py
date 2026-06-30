@@ -9,8 +9,8 @@ from watchdog.events import FileSystemEventHandler
 from database import insert_file_event, insert_alert, insert_system_metrics
 
 # ── Configuration ──────────────────────────────────────────
-WATCH_PATH = "./watched_folder"
-LOG_FILE   = "events.log"
+WATCH_PATH = "backend/watched_folder"
+LOG_FILE   = "backend/events.log"
 THRESHOLDS = {"cpu_medium": 80, "cpu_high": 95, "ram_high": 90}
 METRICS_INTERVAL = 15  # secondes entre deux collectes système
 

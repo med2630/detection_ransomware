@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Ransomware Behavior Detection Dashboard</title>
+    <!-- Modern Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+
+        :root {
+            --bg-color: #030712;
+            --card-bg: rgba(17, 24, 39, 0.6);
+            --card-border: rgba(255, 255, 255, 0.05);
+            --card-hover-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #a855f7;
+            --status-normal: #10b981;
+            --status-suspect: #f59e0b;
+            --status-critical: #ef4444;
+            --glass-blur: blur(20px);
+            --transition-modern: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 40%, rgba(168, 85, 247, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 90% 60%, rgba(6, 182, 212, 0.08) 0%, transparent 45%);
+            background-attachment: fixed;
+            padding: 2.5rem;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Style */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2.5rem;
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            transition: var(--transition-modern);
+        }
+
+        header:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+        }
+
+        .header-title-area h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff 0%, #d1d5db 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.3px;
+        }
+
+        .header-title-area p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(10px);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--status-normal);
+            box-shadow: 0 0 10px var(--status-normal);
+        }
+
+        /* Critical Alert Banner */
+        #critical-banner {
+            display: none;
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.1) 0%, rgba(153, 27, 27, 0.2) 50%, rgba(239, 68, 68, 0.1) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 1.2rem;
+            text-align: center;
+            color: #fca5a5;
+            font-weight: 600;
+            font-size: 1.05rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.15);
+            backdrop-filter: blur(8px);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 2fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 1.8rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            transition: var(--transition-modern);
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: var(--card-hover-border);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255,255,255,0.02) inset;
+        }
+
+        .ai-status-card {
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(6, 182, 212, 0.02) 0%, rgba(17, 24, 39, 0.6) 100%), var(--card-bg);
+        }
+
+        .ai-status-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), var(--accent-purple), transparent);
+            opacity: 0.5;
+        }
+
+        .ai-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .pred-badge {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            padding: 0.8rem 2.5rem;
+            border-radius: 16px;
+            letter-spacing: 1px;
+            margin: 1rem 0;
+            display: inline-block;
+        }
+
+        .pred-normal {
+            color: var(--status-normal);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            background: rgba(16, 185, 129, 0.05);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1);
+        }
+
+        .pred-suspect {
+            color: var(--status-suspect);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            background: rgba(245, 158, 11, 0.08);
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.15);
+        }
+
+        .pred-ransomware {
+            color: var(--status-critical);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            background: rgba(239, 68, 68, 0.1);
+            box-shadow: 0 4px 24px rgba(239, 68, 68, 0.2);
+        }
+
+        .ai-confidence-table {
+            width: 100%;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            border-collapse: separate;
+            border-spacing: 0 6px;
+        }
+
+        .ai-confidence-table td {
+            padding: 8px 12px;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .ai-confidence-table td:first-child {
+            border-radius: 6px 0 0 6px;
+            font-weight: 500;
+        }
+
+        .ai-confidence-table td:last-child {
+            border-radius: 0 6px 6px 0;
+            text-align: right;
+        }
+
+        .ai-confidence-table .conf-val {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        /* Metrics grid */
+        .metrics-subgrid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.2rem;
+            height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .metrics-subgrid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .metric-tile {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: var(--transition-modern);
+        }
+        
+        .metric-tile:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .metric-tile-title {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-tile-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin: 1.2rem 0;
+            background: linear-gradient(135deg, #ffffff, #d1d5db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Progress meters */
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.04);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: auto;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+            transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .fill-cpu {
+            background: linear-gradient(90deg, #06b6d4, #3b82f6);
+            box-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
+        }
+
+        .fill-ram {
+            background: linear-gradient(90deg, #a855f7, #ec4899);
+            box-shadow: 0 0 8px rgba(168, 85, 247, 0.4);
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .activity-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .activity-card {
+            min-height: 450px;
+            max-height: 600px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ffffff;
+        }
+
+        .scrollable-feed {
+            overflow-y: auto;
+            flex-grow: 1;
+            padding-right: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        /* Styling scrollbars */
+        .scrollable-feed::-webkit-scrollbar {
+            width: 4px;
+        }
+        .scrollable-feed::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.01);
+            border-radius: 10px;
+        }
+        .scrollable-feed::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .scrollable-feed::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Event Row */
+        .event-row {
+            background: rgba(255, 255, 255, 0.015);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            transition: var(--transition-modern);
+        }
+
+        .event-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+            transform: translateX(4px);
+            box-shadow: -4px 4px 12px rgba(0,0,0,0.15);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .event-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            overflow: hidden;
+            width: 75%;
+        }
+
+        .event-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 6px;
+            min-width: 80px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .event-badge.created { background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
+        .event-badge.modified { background: rgba(168, 85, 247, 0.1); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.2); }
+        .event-badge.deleted { background: rgba(249, 115, 22, 0.1); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.2); }
+        .event-badge.renamed { background: rgba(234, 179, 8, 0.1); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.2); }
+
+        .event-path {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-primary);
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .event-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        /* Alert Row */
+        .alert-row {
+            background: rgba(255, 255, 255, 0.015);
+            border-left: 3px solid var(--status-normal);
+            border-radius: 6px 10px 10px 6px;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.85rem;
+            transition: var(--transition-modern);
+        }
+
+        .alert-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+            transform: translateX(4px);
+            box-shadow: -4px 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .alert-row.alert-low { border-left-color: #3b82f6; }
+        .alert-row.alert-medium { border-left-color: #f59e0b; }
+        .alert-row.alert-high { border-left-color: #f97316; }
+        .alert-row.alert-critical { 
+            border-left-color: #ef4444; 
+            background: rgba(239, 68, 68, 0.03); 
+        }
+
+        .alert-top {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+        }
+
+        .alert-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .alert-desc {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+
+        .alert-specs {
+            display: flex;
+            gap: 12px;
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: 4px;
+            font-family: monospace;
+            background: rgba(0,0,0,0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-flex;
+            width: fit-content;
+        }
+
+        .empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-style: italic;
+            opacity: 0.6;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    
+    <!-- Top Warning Banner -->
+    <div id="critical-banner"></div>
+
+    <!-- Header Section -->
+    <header>
+        <div class="header-title-area">
+            <h1>AI Behavioral Ransomware Detection Center</h1>
+            <p>Moniteur de surveillance comportementale en temps réel (Random Forest Engine)</p>
+        </div>
+        <div class="connection-status">
+            <span class="status-dot" id="api-dot"></span>
+            <span id="api-status">Connexion en cours...</span>
+        </div>
+    </header>
+
+    <!-- Top Summary Grid -->
+    <div class="summary-grid">
+        <!-- AI Classifier Card -->
+        <div class="card ai-status-card">
+            <div class="ai-label">Diagnostic IA</div>
+            <div id="ai-prediction" class="pred-badge pred-normal">CHARGEMENT</div>
+            <table class="ai-confidence-table">
+                <tr>
+                    <td>Normal</td>
+                    <td class="conf-val" id="prob-normal">-</td>
+                </tr>
+                <tr>
+                    <td>Suspect</td>
+                    <td class="conf-val" id="prob-suspect">-</td>
+                </tr>
+                <tr>
+                    <td>Ransomware</td>
+                    <td class="conf-val" id="prob-ransomware">-</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- System Telemetry Tile -->
+        <div class="card">
+            <div class="ai-label">Télémétrie Système (Temps Réel)</div>
+            <div class="metrics-subgrid">
+                
+                <!-- CPU Tile -->
+                <div class="metric-tile">
+                    <div class="metric-tile-title">CPU</div>
+                    <div class="metric-tile-value" id="cpu-val">0%</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill fill-cpu" id="cpu-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- RAM Tile -->
+                <div class="metric-tile">
+                    <div class="metric-tile-title">RAM</div>
+                    <div class="metric-tile-value" id="ram-val">0%</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill fill-ram" id="ram-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Processes Tile -->
+                <div class="metric-tile">
+                    <div class="metric-tile-title">Processus</div>
+                    <div class="metric-tile-value" id="proc-val">0</div>
+                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: auto;">
+                        Tâches surveillées actives
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Activity Grid -->
+    <div class="activity-grid">
+        
+        <!-- Left: File Events -->
+        <div class="card activity-card">
+            <div class="card-header">
+                <h2>📁 Activité Fichiers Récents</h2>
+                <span style="font-size: 0.8rem; color: var(--text-secondary);" id="event-count">0</span>
+            </div>
+            <div class="scrollable-feed" id="events-list">
+                <div class="empty-state">Aucun événement fichier détecté dans watched_folder.</div>
+            </div>
+        </div>
+
+        <!-- Right: Security Alerts -->
+        <div class="card activity-card">
+            <div class="card-header">
+                <h2>🚨 Alertes de Sécurité</h2>
+                <span style="font-size: 0.8rem; color: var(--text-secondary);" id="alert-count-badge">0</span>
+            </div>
+            <div class="scrollable-feed" id="alerts-list">
+                <div class="empty-state">Aucune alerte enregistrée dans la base de données.</div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Appels clés — structure du polling JS -->
+<script>
+const API = "http://localhost:5000";
+let currentEvents = [];
+let currentAlerts = [];
+
+// Helper : Formate la date de l'événement
+function formatTimestamp(tsStr) {
+    if (!tsStr) return "";
+    try {
+        const parts = tsStr.split(" ");
+        if (parts.length === 2) {
+            return parts[1]; // HH:MM:SS
+        }
+        return tsStr;
+    } catch(e) {
+        return tsStr;
+    }
+}
+
+// Affichage d'une alerte critique si ransomware
+function showCriticalAlert(message) {
+    const banner = document.getElementById("critical-banner");
+    banner.innerHTML = message;
+    banner.style.display = "block";
+}
+
+function hideCriticalAlert() {
+    const banner = document.getElementById("critical-banner");
+    banner.style.display = "none";
+}
+
+// Rendu des alertes
+function renderAlerts(alerts) {
+    const container = document.getElementById("alerts-list");
+    const countBadge = document.getElementById("alert-count-badge");
+    
+    countBadge.textContent = alerts.length;
+
+    if (!alerts || alerts.length === 0) {
+        container.innerHTML = `<div class="empty-state">Aucune alerte enregistrée dans la base de données.</div>`;
+        return;
+    }
+
+    container.innerHTML = alerts.map(al => {
+        const levelClass = `alert-${al.level.toLowerCase()}`;
+        return `
+            <div class="alert-row ${levelClass}">
+                <div class="alert-top">
+                    <div class="alert-title">
+                        <span>🚨 ${al.level}</span> — ${al.rule_name}
+                    </div>
+                    <span style="color: var(--text-secondary); font-size: 0.75rem;">
+                        ${formatTimestamp(al.timestamp)}
+                    </span>
+                </div>
+                <div class="alert-desc">${al.description}</div>
+                <div class="alert-specs">
+                    <span>CPU: ${al.cpu_at_alert}%</span>
+                    <span>RAM: ${al.ram_at_alert}%</span>
+                    <span>Status: ${al.resolved ? 'Résolu' : 'Actif'}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Rendu des événements fichiers
+function renderEvents(events) {
+    const container = document.getElementById("events-list");
+    const countBadge = document.getElementById("event-count");
+
+    countBadge.textContent = events.length;
+
+    if (!events || events.length === 0) {
+        container.innerHTML = `<div class="empty-state">Aucun événement fichier détecté dans watched_folder.</div>`;
+        return;
+    }
+
+    container.innerHTML = events.map(ev => {
+        const typeClass = ev.event_type.toLowerCase();
+        let pathDisplay = ev.file_path;
+        if (ev.dest_path) {
+            pathDisplay += ` ➜ ${ev.dest_path}`;
+        }
+        return `
+            <div class="event-row">
+                <div class="event-info">
+                    <span class="event-badge ${typeClass}">${ev.event_type}</span>
+                    <span class="event-path" title="${pathDisplay}">${pathDisplay.replace(/^.*watched_folder\//, '')}</span>
+                </div>
+                <div class="event-meta">
+                    <span>${formatTimestamp(ev.timestamp)}</span>
+                    <span style="color: #6b7280; font-size: 0.7rem;">CPU:${ev.cpu_percent}% | RAM:${ev.ram_percent}%</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Compteurs des événements dans la fenêtre des 60 dernières secondes (temps serveur)
+function getCounter(type, serverTime) {
+    let count = 0;
+    for (const ev of currentEvents) {
+        const eventTime = new Date(ev.timestamp.replace(' ', 'T'));
+        const diffMs = serverTime - eventTime;
+        if (diffMs >= 0 && diffMs <= 60000 && ev.event_type === type) {
+            count++;
+        }
+    }
+    return count;
+}
+
+// Compteur des alertes dans la fenêtre des 60 dernières secondes (temps serveur)
+function getAlertCount(serverTime) {
+    let count = 0;
+    for (const al of currentAlerts) {
+        const alTime = new Date(al.timestamp.replace(' ', 'T'));
+        const diffMs = serverTime - alTime;
+        if (diffMs >= 0 && diffMs <= 60000) {
+            count++;
+        }
+    }
+    return count;
+}
+
+// Polling toutes les 5 secondes
+async function refresh() {
+    try {
+        const [mRes, evRes, alRes] = await Promise.all([
+            fetch(`${API}/metrics`).then(r => r.json()),
+            fetch(`${API}/events`).then(r => r.json()),
+            fetch(`${API}/alerts`).then(r => r.json())
+        ]);
+
+        document.getElementById("api-dot").className = "status-dot";
+        document.getElementById("api-status").textContent = "API en ligne";
+
+        currentEvents = evRes.events || [];
+        currentAlerts = alRes.alerts || [];
+
+        renderEvents(currentEvents);
+        renderAlerts(currentAlerts);
+
+        document.getElementById("cpu-val").textContent = mRes.cpu_percent + "%";
+        document.getElementById("cpu-bar").style.width = mRes.cpu_percent + "%";
+        document.getElementById("ram-val").textContent = mRes.ram_percent + "%";
+        document.getElementById("ram-bar").style.width = mRes.ram_percent + "%";
+        document.getElementById("proc-val").textContent = mRes.process_count;
+
+        const serverTime = new Date(mRes.timestamp);
+
+        const features = {
+            files_created: getCounter("created", serverTime),
+            files_deleted: getCounter("deleted", serverTime),
+            files_modified: getCounter("modified", serverTime),
+            files_renamed: getCounter("renamed", serverTime),
+            cpu_avg: mRes.cpu_percent,
+            cpu_max: mRes.cpu_percent,
+            ram_avg: mRes.ram_percent,
+            process_count: mRes.process_count,
+            alert_count: getAlertCount(serverTime)
+        };
+
+        const p = await fetch(`${API}/predict`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(features)
+        }).then(r => r.json());
+
+        const badge = document.getElementById("ai-prediction");
+        badge.textContent = p.class;
+        badge.className = "pred-badge pred-" + p.class.toLowerCase();
+
+        document.getElementById("prob-normal").textContent = (p.proba_normal * 100).toFixed(2) + "%";
+        document.getElementById("prob-suspect").textContent = (p.proba_suspect * 100).toFixed(2) + "%";
+        document.getElementById("prob-ransomware").textContent = (p.proba_ransomware * 100).toFixed(2) + "%";
+
+        if (p.label === 2) {
+            showCriticalAlert(`⚠️ RANSOMWARE DÉTECTÉ PAR IA (Confiance : ${(p.proba_ransomware * 100).toFixed(1)}%) — Activité malicieuse détectée dans watched_folder !`);
+        } else {
+            hideCriticalAlert();
+        }
+
+    } catch (err) {
+        console.error("Erreur de connexion API:", err);
+        const dot = document.getElementById("api-dot");
+        if (dot) {
+            dot.className = "status-dot";
+            dot.style.backgroundColor = "var(--status-critical)";
+            dot.style.boxShadow = "0 0 8px var(--status-critical)";
+        }
+        const statusText = document.getElementById("api-status");
+        if (statusText) {
+            statusText.textContent = "Hors ligne (Erreur API)";
+        }
+    }
+}
+
+setInterval(refresh, 5000);  // polling 5s
+refresh();                     // appel immédiat au chargement
+</script>
+</body>
+</html>
